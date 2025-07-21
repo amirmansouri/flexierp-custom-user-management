@@ -1,35 +1,35 @@
-### Flexierp Custom User Management
+#!/bin/bash
 
-Flexierp Custom User Management
+# ---------------------------------------------
+# Script to install flexierp_custom_user_management on Frappe
+# Author: amirmansouri.dev@gmail.com
+# ---------------------------------------------
 
-### Installation
+# CONFIGURATION
+SITE_NAME="site1.local"
+APP_NAME="flexierp_custom_user_management"
+GIT_REPO="https://github.com/YOUR_USERNAME/flexierp_custom_user_management.git"  # <- UPDATE THIS
 
-You can install this app using the [bench](https://github.com/frappe/bench) CLI:
+# STEP 1: Clone the app
+echo "📦 Cloning app..."
+cd apps || exit
+if [ -d "$APP_NAME" ]; then
+  echo "⚠️ App folder already exists. Skipping clone."
+else
+  git clone "$GIT_REPO"
+fi
 
-```bash
-cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
-bench install-app flexierp_custom_user_management
-```
+# STEP 2: Add app to bench
+cd ..
+echo "🔗 Adding app to bench..."
+bench --site "$SITE_NAME" install-app "$APP_NAME"
 
-### Contributing
+# STEP 3: Run migrations
+echo "🔄 Migrating site..."
+bench --site "$SITE_NAME" migrate
 
-This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
+# STEP 4: Restart bench
+echo "🚀 Restarting Frappe..."
+bench restart
 
-```bash
-cd apps/flexierp_custom_user_management
-pre-commit install
-```
-
-Pre-commit is configured to use the following tools for checking and formatting your code:
-
-- ruff
-- eslint
-- prettier
-- pyupgrade
-
-### License
-
-mit
-# Sellsy-User-Mgmt
-# Sellsy-User-Mgmt
+echo "✅ Done! App '$APP_NAME' installed on site '$SITE_NAME'"
