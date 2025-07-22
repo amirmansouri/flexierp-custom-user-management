@@ -5,13 +5,22 @@
 frappe.ui.form.on('Utilisateurs', {
     refresh: function (frm) {
         // displays a specific set of roles.
-        frm.fields_dict['role'].get_query = function () {
-            return {
-                filters: {
-                    name: ["in", ["Responsable de vente", "Responsable Logistique", "Financier", "Administrateur"]]
-                }
-            };
-        };
+        // frm.fields_dict['role'].get_query = function () {
+        //     return {
+        //         filters: {
+        //             name: ["in", ["Responsable de vente", "Responsable Logistique", "Financier", "Administrateur"]]
+        //         }
+        //     };
+        // };
+        frm.set_query("role", function () {
+    return {
+        query: 'flexierp_custom_user_management.flexierp_custom_user_management.doctype.utilisateurs.utilisateurs.get_roles_by_company',
+        filters: {
+            company: frm.doc.company
+        }
+    };
+});
+
         if ($('[data-fieldname="password"] input').length) {
             $('[data-fieldname="password"] input').attr('type', 'password'); // Mask the input
         }

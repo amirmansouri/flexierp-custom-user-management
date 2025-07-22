@@ -13,7 +13,12 @@ fixtures = [
         "filters": [["name", "=", "Utilisateurs"]]
     },
     
-    
+{
+  "dt": "DocType",
+  "filters": [["name", "in", ["Roles Visibility Management", "Role Entry"]]]
+}
+
+
 
 
 ]

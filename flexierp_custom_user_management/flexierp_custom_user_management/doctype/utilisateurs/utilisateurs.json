@@ -11,6 +11,7 @@
   "full_name",
   "email",
   "password",
+  "company",
   "role",
   "colbreak1",
   "telephone",
@@ -38,6 +39,14 @@
    "fieldname": "password",
    "fieldtype": "Data",
    "label": "Mot de passe",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Soci\u00e9t\u00e9",
+   "options": "Company",
    "reqd": 1
   },
   {
@@ -81,9 +90,9 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-09 18:34:18.396665",
- "modified_by": "Administrator",
-"module": "Flexierp Custom User Management",
+ "modified": "2025-07-22 11:24:37.472703",
+ "modified_by": "amir@gmail.com",
+ "module": "Flexierp Custom User Management",
  "name": "Utilisateurs",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
@@ -101,6 +110,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "search_fields": "full_name",
  "show_title_field_in_link": 1,
  "sort_field": "modified",

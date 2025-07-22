@@ -3,6 +3,8 @@ from frappe.model.document import Document
 import string
 import random
 from frappe import _
+from urllib.parse import unquote
+
 
 class Utilisateurs(Document):
     def on_submit(self):
@@ -36,11 +38,14 @@ def create_or_update_user(doc, method=None):
 
     user.set("roles", [])
 
-    if isinstance(doc.role, str):
-        user.append("roles", {"role": doc.role})
-    elif isinstance(doc.role, list):
-        for role in doc.role:
-            user.append("roles", {"role": role})
+     
+    role_value = unquote(doc.role) if isinstance(doc.role, str) else None
+
+     
+    if role_value and frappe.db.exists("Role", {"name": role_value}):
+        user.append("roles", {"role": role_value})
+    else:
+        frappe.throw(_("Le rôle spécifié est invalide ou introuvable: {0}").format(role_value))
 
     user.save(ignore_permissions=True)
 
@@ -60,7 +65,9 @@ def sync_utilisateur_on_password_change(doc, method):
     if frappe.db.exists("Utilisateurs", {"email": doc.email}):
         utilisateur = frappe.get_doc("Utilisateurs", {"email": doc.email})
         utilisateur.password = doc.new_password
-        utilisateur.save(ignore_permissions=True)
+        utilisateur.save(ignore_permissions=True, ignore_mandatory=True)
+
+        
 
          
 
@@ -89,6 +96,34 @@ def generate_password(email):
     frappe.msgprint(_("Le nouveau mot de passe est: {0}").format(password))
     return _("Le nouveau mot de passe est: {0}").format(password)
 
+@frappe.whitelist()
+def get_roles_by_company(doctype, txt, searchfield, start, page_len, filters):
+    """
+    Return roles from 'Roles Visibility Management' for the selected company.
+    Used to filter role dropdown in Utilisateurs doctype.
+    """
+    company = filters.get("company")
+    if not company:
+        return []
+
+    # Get records in Roles Visibility Management for that company
+    rvm_names = frappe.get_all(
+        "Roles Visibility Management",
+        filters={"company": company},
+        pluck="name"
+    )
+
+    if not rvm_names:
+        return []
+
+    # Get Role entries from the child table Role Entry
+    roles = frappe.get_all(
+        "Role Entry",
+        filters={"parent": ["in", rvm_names]},
+        fields=["role"]
+    )
+
+    return [(r["role"],) for r in roles]
 
 
 
